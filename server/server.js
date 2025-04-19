@@ -21,31 +21,41 @@ const openai = new OpenAI({
 });
 
 app.post("/api/sermon", async (req, res) => {
-    try {
-      const { prompt } = req.body;
-  
-      const completion = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are PastorBuddy, a compassionate AI assistant helping pastors prepare inclusive, relevant, and Scripture-based sermons.",
-          },
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
-      });
-  
-      res.json({ message: completion.choices[0].message.content });
-    } catch (error) {
-      console.error("OpenAI API Error:", error);
-      res.status(500).json({ message: "Something went wrong with OpenAI." });
-    }
-  });
+  try {
+    const { prompt } = req.body;
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+    // Set headers for streaming
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+
+    // Call OpenAI with streaming enabled
+    const stream = await openai.chat.completions.create({
+      model: "gpt-4o",
+      stream: true,
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are PastorBuddy, a compassionate AI assistant helping pastors prepare inclusive, relevant, and Scripture-based sermons.",
+        },
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+    });
+
+    for await (const chunk of stream) {
+      const content = chunk.choices[0]?.delta?.content;
+      if (content) {
+        res.write(content); // stream to client
+      }
+    }
+
+    res.end(); // end connection
+  } catch (error) {
+    console.error("OpenAI Streaming Error:", error);
+    res.status(500).end("Something went wrong with OpenAI.");
+  }
 });
