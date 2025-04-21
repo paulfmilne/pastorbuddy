@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./App.css";
+import logo from './assets/logo.png';
 
 function App() {
   const [input, setInput] = useState("");
@@ -45,6 +46,11 @@ function App() {
 
   return (
     <div className="App">
+<img
+  src={logo}
+  alt="PastorBuddy Logo"
+  style={{ width: "80px", height: "80px", marginBottom: "1rem" }}
+/>
       <h1>PastorBuddy</h1>
       <textarea
         value={input}
