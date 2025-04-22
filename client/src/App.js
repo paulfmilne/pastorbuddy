@@ -93,9 +93,9 @@ function App() {
           {isGenerating ? "Generating..." : "Generate Sermon"}
         </button>
 
-        <div style={{ marginTop: "2em", whiteSpace: "pre-wrap", textAlign: "left" }}>
+        <div style={{ marginTop: "2em", whiteSpace: "pre-wrap", textAlign: "center" }}>
           <strong>Response:</strong>
-          <div>{response}</div>
+          <div style={{ textAlign: "left", marginTop: "1rem" }}>{response}</div>
         </div>
 
         <div style={{ marginTop: "3rem", textAlign: "center" }}>
