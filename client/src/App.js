@@ -1,6 +1,6 @@
 import { useState } from "react";
+import logo from "./assets/logo.png";
 import "./App.css";
-import logo from './assets/logo.png';
 
 function App() {
   const [input, setInput] = useState("");
@@ -57,11 +57,11 @@ function App() {
             display: "block",
             marginLeft: "auto",
             marginRight: "auto",
-            borderRadius: "12px"
+            borderRadius: "12px",
           }}
         />
         <h1>PastorBuddy</h1>
-  
+
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -74,40 +74,46 @@ function App() {
             margin: "1em auto",
             border: "1px solid #ccc",
             borderRadius: "8px",
-            boxSizing: "border-box"
+            boxSizing: "border-box",
           }}
         />
-  
+
         <br />
-  
+
         <button
           onClick={handleSubmit}
           disabled={isGenerating}
-          style={{ padding: "0.75em 1.5em", fontSize: "1rem", borderRadius: "8px", cursor: "pointer" }}
+          style={{
+            padding: "0.75em 1.5em",
+            fontSize: "1rem",
+            borderRadius: "8px",
+            cursor: "pointer",
+          }}
         >
           {isGenerating ? "Generating..." : "Generate Sermon"}
         </button>
-  
-        <div style={{ marginTop: "2em", whiteSpace: "pre-wrap", textAlign: "left" }}>
-      <strong>Response:</strong>
-      <div>{response}</div>
-    </div>
 
-    <div style={{ marginTop: "3rem", textAlign: "center" }}>
-  <a
-    href="https://www.buymeacoffee.com/paulfmilne"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <img
-      src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
-      alt="Buy Me A Coffee"
-      style={{ height: "45px", width: "162px" }}
-    />
-  </a>
-</div>
-  </div>
-);
+        <div style={{ marginTop: "2em", whiteSpace: "pre-wrap", textAlign: "left" }}>
+          <strong>Response:</strong>
+          <div>{response}</div>
+        </div>
+
+        <div style={{ marginTop: "3rem", textAlign: "center" }}>
+          <a
+            href="https://www.buymeacoffee.com/paulfmilne"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
+              alt="Buy Me A Coffee"
+              style={{ height: "45px", width: "162px" }}
+            />
+          </a>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default App;
