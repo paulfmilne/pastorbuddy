@@ -89,12 +89,25 @@ function App() {
         </button>
   
         <div style={{ marginTop: "2em", whiteSpace: "pre-wrap", textAlign: "left" }}>
-          <strong>Response:</strong>
-          <div>{response}</div>
-        </div>
-      </div>
+      <strong>Response:</strong>
+      <div>{response}</div>
     </div>
-  );
+
+    <div style={{ marginTop: "3rem", textAlign: "center" }}>
+  <a
+    href="https://www.buymeacoffee.com/paulfmilne"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <img
+      src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
+      alt="Buy Me A Coffee"
+      style={{ height: "45px", width: "162px" }}
+    />
+  </a>
+</div>
+  </div>
+);
 }
 
 export default App;
