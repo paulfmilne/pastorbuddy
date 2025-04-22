@@ -1,18 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "./assets/logo.png";
 import "./App.css";
+
+const tips = [
+  "📖 Gathering wisdom...",
+  "🙏 Reflecting prayerfully...",
+  "🕊️ Preparing your message...",
+  "💡 Listening for insight...",
+  "📜 Searching the Scriptures..."
+];
 
 function App() {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [tipIndex, setTipIndex] = useState(0);
+
+  useEffect(() => {
+    if (isGenerating) {
+      const interval = setInterval(() => {
+        setTipIndex((prev) => (prev + 1) % tips.length);
+      }, 2500); // change tip every 2.5s
+      return () => clearInterval(interval);
+    }
+  }, [isGenerating]);
 
   const handleSubmit = async () => {
     if (!input.trim()) return;
 
     setIsGenerating(true);
     setResponse("");
-    setInput("");
 
     try {
       const res = await fetch(`${process.env.REACT_APP_API_URL}/api/sermon`, {
@@ -55,8 +72,7 @@ function App() {
             height: "80px",
             marginBottom: "1rem",
             display: "block",
-            marginLeft: "auto",
-            marginRight: "auto",
+            margin: "auto",
             borderRadius: "12px",
           }}
         />
@@ -87,11 +103,22 @@ function App() {
             padding: "0.75em 1.5em",
             fontSize: "1rem",
             borderRadius: "8px",
-            cursor: "pointer",
+            cursor: isGenerating ? "not-allowed" : "pointer",
+            opacity: isGenerating ? 0.6 : 1,
           }}
         >
-          {isGenerating ? "Generating..." : "Generate Sermon"}
+          {isGenerating ? (
+            <span className="spinner" />
+          ) : (
+            "Generate Sermon"
+          )}
         </button>
+
+        {isGenerating && (
+          <p style={{ marginTop: "1rem", fontStyle: "italic", color: "#666" }}>
+            {tips[tipIndex]}
+          </p>
+        )}
 
         <div style={{ marginTop: "2em", whiteSpace: "pre-wrap", textAlign: "center" }}>
           <strong>Response:</strong>
