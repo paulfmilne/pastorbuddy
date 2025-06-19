@@ -6,8 +6,8 @@ dotenv.config();
 console.log("OpenAI Key Loaded:", process.env.OPENAI_API_KEY ? "Yes ✅" : "No ❌");
 // Check if OpenAI API Key is set
 
-// FIX: Import OpenAI correctly
-const { OpenAI } = require("openai");
+// Import OpenAI
+const OpenAI = require("openai");
 
 // Initialize Express
 const app = express();
