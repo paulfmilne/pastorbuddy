@@ -12,3 +12,7 @@ client/.env
 .DS_Store
 .idea/
 .vscode/
+
+# Local knowledge base and Obsidian files
+notes/
+.obsidian/
