@@ -15,6 +15,7 @@ function App() {
   const [response, setResponse] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [tipIndex, setTipIndex] = useState(0);
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5050";
 
   useEffect(() => {
     if (isGenerating) {
@@ -32,14 +33,15 @@ function App() {
     setResponse("");
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/sermon`, {
+      const res = await fetch(`${apiUrl}/api/sermon`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: input }),
       });
 
       if (!res.ok || !res.body) {
-        setResponse("❌ Something went wrong.");
+        const errorBody = await res.text();
+        setResponse(errorBody || "❌ Something went wrong.");
         setIsGenerating(false);
         return;
       }
