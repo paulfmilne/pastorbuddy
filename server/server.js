@@ -13,7 +13,7 @@ if (!process.env.GEMINI_API_KEY) {
 // Initialize Express
 const app = express();
 const PORT = process.env.PORT || 5050;
-const MODEL = process.env.GEMINI_MODEL || "gemini-2.0-flash";
+const MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
 app.use(cors());
 app.use(express.json());
 
