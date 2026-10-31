@@ -23,6 +23,21 @@ app.get("/", (_req, res) => {
 
 const gemini = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = gemini.getGenerativeModel({ model: MODEL });
+const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+const generateContentStreamWithRetry = async (contents) => {
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      return await model.generateContentStream({ contents });
+    } catch (error) {
+      const isTemporaryError = error?.status === 429 || error?.status === 503;
+      if (!isTemporaryError || attempt === 2) {
+        throw error;
+      }
+      await wait(1000 * (attempt + 1));
+    }
+  }
+};
 
 app.post("/api/sermon", async (req, res) => {
   try {
@@ -37,18 +52,17 @@ app.post("/api/sermon", async (req, res) => {
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
 
-    const result = await model.generateContentStream({
-      contents: [
-        {
-          role: "user",
-          parts: [
-            {
-              text: `You are PastorBuddy, a compassionate AI assistant helping pastors prepare inclusive, relevant, and Scripture-based sermons.\n\n${prompt}`,
-            },
-          ],
-        },
-      ],
-    });
+    const contents = [
+      {
+        role: "user",
+        parts: [
+          {
+            text: `You are PastorBuddy, a compassionate AI assistant helping pastors prepare inclusive, relevant, and Scripture-based sermons.\n\n${prompt}`,
+          },
+        ],
+      },
+    ];
+    const result = await generateContentStreamWithRetry(contents);
 
     for await (const chunk of result.stream) {
       const content = chunk.text();
@@ -63,7 +77,13 @@ app.post("/api/sermon", async (req, res) => {
     if (res.headersSent) {
       res.end();
     } else {
-      res.status(500).json({ error: "Unable to generate a sermon." });
+      const status = error?.status === 429 || error?.status === 503 ? 503 : 500;
+      res.status(status).json({
+        error:
+          status === 503
+            ? "Gemini is temporarily unavailable. Please try again shortly."
+            : "Unable to generate a sermon.",
+      });
     }
   }
 });
